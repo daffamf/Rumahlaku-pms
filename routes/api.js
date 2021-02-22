@@ -290,8 +290,6 @@ module.exports = function (pool) {
                 req.flash('info', 'email alredy exist')
             }
 
-            req.session.user = data.rows[0]
-            res.json({ msg: 'success' })
 
             // pool.query(`select * from users where password = '${req.body.password}'`, (err, data) => {
             //     // console.log( data.rows[0].password)

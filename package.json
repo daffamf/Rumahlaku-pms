@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "express-session": "^1.17.1",
+    "heroku": "^7.47.11",
     "http-errors": "^1.6.3",
     "jade": "~1.11.0",
     "jquery": "^3.5.1",
