@@ -31,33 +31,33 @@
   <script src="http://maps.googleapis.com/maps/api/js"></script>
   <script>
     $(document).ready(function () {
-      coordinate ()
+      coordinate()
       $.ajax({
-          url: `${API_URL}/coordinate`,
-          method: 'GET',
-          dataType: 'json'
+        url: `${API_URL}/coordinate`,
+        method: 'GET',
+        dataType: 'json'
       }).done(function (data) {
-          let map;
-          let corArray = []
-          // console.log(data)
-          var coordsArray = data.data;
-          for (let i = 0; i < coordsArray.length; i++) {
-              var coords = coordsArray[i];
-              corArray.push(coords.coordinate.x + ', ' + coords.coordinate.y);
-          }
-          map = new google.maps.Map(document.getElementById("googleMap"), {
-              center: { lat: -6.923735, lng: 107.688739 },
-              zoom: 12,
+        let map;
+        let corArray = []
+        // console.log(data)
+        var coordsArray = data.data;
+        for (let i = 0; i < coordsArray.length; i++) {
+          var coords = coordsArray[i];
+          corArray.push(coords.coordinate.x + ', ' + coords.coordinate.y);
+        }
+        map = new google.maps.Map(document.getElementById("googleMap"), {
+          center: { lat: -6.923735, lng: 107.688739 },
+          zoom: 12,
+        });
+        for (let i = 0; i < corArray.length; i++) {
+          let splitCoord = corArray[i].split(", ");
+          var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(parseFloat(splitCoord[0]), parseFloat(splitCoord[1])),
+            map: map
           });
-          for (let i = 0; i < corArray.length; i++) {
-              let splitCoord = corArray[i].split(", ");
-              var marker = new google.maps.Marker({
-                  position: new google.maps.LatLng(parseFloat(splitCoord[0]), parseFloat(splitCoord[1])),
-                  map: map
-              });
-          }
-          google.maps.event.addDomListener(window, 'load', $(this));
-          // console.log(corArray)
+        }
+        google.maps.event.addDomListener(window, 'load', $(this));
+        // console.log(corArray)
       }).fail(function (textStatus, jqXHR) {
       })
     })
@@ -72,7 +72,7 @@
       <div class="w3-container w3-dark-grey">
         <h4>Filter</h4>
       </div>
-      <a href="/ "type="button" class="w3-bar-item w3-button w3-blue" id="kategori-all">All</a>
+      <a href="/ " type="button" class="w3-bar-item w3-button w3-blue" id="kategori-all">All</a>
       <a href="/kategori=jual" type="button" class="w3-bar-item w3-button" id="kategori-jual">Jual</a>
       <a href="/kategori=sewa" type="button" class="w3-bar-item w3-button" id="kategori-sewa">Sewa</a>
     </div>
@@ -232,8 +232,8 @@
         })
 
           .done(function (data) {
-           let filter = JSON.stringify(data.filter)
-           $("#filter").html(`${filter == 'null' ? `<h1>KATEGORI JUAL</h1><hr>` : `<h1>Pencarian Untuk '${filter.slice(9, filter.length - 1)}'</h1><hr>`}`)
+            let filter = JSON.stringify(data.filter)
+            $("#filter").html(`${filter == 'null' ? `<h1>KATEGORI JUAL</h1><hr>` : `<h1>Pencarian Untuk '${filter.slice(9, filter.length - 1)}'</h1><hr>`}`)
             let rows = data.data
             let html = ``
             rows.forEach((item, index) => {
@@ -242,7 +242,7 @@
                             <div class="card" draggable="true" ondragstart="drag(event)" id="${item.id}">
         <img src="/images/upload/${foto[0]}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title">${item.isjual ? 'Jual': 'Sewa'}</h5>
+          <h5 class="card-title">${item.isjual ? 'Jual' : 'Sewa'}</h5>
        
 
         </div>
