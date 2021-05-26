@@ -248,7 +248,7 @@ module.exports = function (pool) {
 
 
 
-        }
+        }   
         pool.query('select * from users where email= $1', [req.body.email], (err, data) => {
             if (err) {
                 req.flash('info', 'try again later')
@@ -257,6 +257,7 @@ module.exports = function (pool) {
 
 
             if (data.rows.lenght > 0) {
+                console.log('rrr',data.rows.length> 0 )
                 req.flash('info', 'try again later')
 
             }
