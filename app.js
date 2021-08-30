@@ -12,7 +12,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'Rumahlaku',
+  database: 'rumahlaku',
   password: '12345',
   port: 5432
 })
@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-    secret: 'Rumahlaku',
+    secret: 'rumahlaku',
   
   }))
 
