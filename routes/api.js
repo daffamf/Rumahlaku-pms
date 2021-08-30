@@ -22,11 +22,11 @@ module.exports = function (pool) {
             }
         })
     })
-   
+
 
 
     router.post('/upload', function (req, res) {
-        var { alamat, harga, luas_tanah, koordinat,id_users,kota,kategori,kamar,isNego} = req.body;
+        var { alamat, harga, luas_tanah, koordinat, id_users, kota, kategori, kamar, isNego } = req.body;
         function makeid(length) {
             var result = '';
             var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -43,10 +43,10 @@ module.exports = function (pool) {
         var yyyy = today.getFullYear();
 
         today = mm + '_' + yyyy;
-      
+
 
         let __dirname = '/home/rubicamp/Desktop/Batch24/Rumahlaku/public/images/upload/'
-       console.log(req.files)
+        console.log(req.files)
 
         if (!req.files || Object.keys(req.files).length === 0) {
             return res.send("Gagal upload")
@@ -64,7 +64,7 @@ module.exports = function (pool) {
         }
 
         const filenameRen = filename.join(',');
-        var sql = `INSERT INTO iklan (lokasi, coordinate,foto,harga,isjual,id_users,luas_tanah,kota,jml_kmr,isnego) VALUES ('${alamat}', '${koordinat}','${filenameRen}', ${harga}, ${kategori == 'jual' ? true : false}, ${Number(id_users)}, '${luas_tanah}','${kota}',${kamar},${isNego == 'on' ? true : false })`
+        var sql = `INSERT INTO iklan (lokasi, coordinate,foto,harga,isjual,id_users,luas_tanah,kota,jml_kmr,isnego) VALUES ('${alamat}', '${koordinat}','${filenameRen}', ${harga}, ${kategori == 'jual' ? true : false}, ${Number(id_users)}, '${luas_tanah}','${kota}',${kamar},${isNego == 'on' ? true : false})`
         console.log(sql)
         pool.query(sql, (err, result) => {
             if (err) {
@@ -77,7 +77,7 @@ module.exports = function (pool) {
 
 
 
-   
+
     router.get('/:page/kategori=sewa', function (req, res, next) {
         const per_page = 3;
         const page = req.params.page || 1;
@@ -133,7 +133,6 @@ module.exports = function (pool) {
         var { id } = req.params;
         var sql = `SELECT i.*, u.username, u.no_telepon FROM iklan as i LEFT JOIN users as u ON i.id_users = u.id WHERE i.id = ${id}`;
         pool.query(sql, (err, result) => {
-            let coord = result.rows.coordinate
             if (err) {
                 res.send('Gagal memuat data iklan')
             } else {
@@ -237,18 +236,18 @@ module.exports = function (pool) {
             })
         });
     })
-        
- 
+
+
 
 
     router.post('/register', function (req, res, next) {
-        
+
         if (req.body.password != req.body.repassword) {
             req.flash('info', 'password doesnt match') //set
 
 
 
-        }   
+        }
         pool.query('select * from users where email= $1', [req.body.email], (err, data) => {
             if (err) {
                 req.flash('info', 'try again later')
@@ -257,7 +256,7 @@ module.exports = function (pool) {
 
 
             if (data.rows.lenght > 0) {
-                console.log('rrr',data.rows.length> 0 )
+                console.log('rrr', data.rows.length > 0)
                 req.flash('info', 'try again later')
 
             }
@@ -271,8 +270,9 @@ module.exports = function (pool) {
                 }
                 console.log(hash)
                 pool.query(`insert into users(username,email, password,Telepon) values ('${req.body.username}', '${req.body.email}', '${hash}','${req.body.Telepon}')`, (err, data) => {
-                    
+
                     if (err) {
+                        console.log(err)
                         req.flash('info', 'try again later')
 
                     }
@@ -285,25 +285,25 @@ module.exports = function (pool) {
 
 
     router.post('/login', function (req, res, next) {
-        pool.query(`select * from users where email = '${req.body.email}'`, (err, data) => {
+        const { email, password } = req.body
+        pool.query(`select * from users where email = '${email}'`, (err, data) => {
             // console.log( data.rows[0].password)
             if (err) {
+                console.log('www', err)
                 req.flash('info', 'email alredy exist')
             }
-
-
-            // pool.query(`select * from users where password = '${req.body.password}'`, (err, data) => {
-            //     // console.log( data.rows[0].password)
-            //     console.log(data.rows)
-            //     if (err) {
-            //         req.flash('info', 'email alredy exist')
-            //     }
-            //     req.session.user = data.rows[0]
-            // res.json({ msg: 'success' })
-
-
-            // })
-
+            if (data.rows.length) {
+                bcrypt.compare(password, data.rows[0].password, (err, result) => {
+                    if (err) {
+                        console.log('www', err)
+                        req.flash('info', 'email/password incorrect')
+                        return
+                    }
+                    req.session.user = data.rows[0]
+                    if (result) res.json({ msg: 'success' })
+                    else res.json({ msg: 'failed' })
+                })
+            }
         })
     });
 
@@ -312,17 +312,17 @@ module.exports = function (pool) {
         let rep = id.split('+').join(',')
         var sql = `SELECT * FROM iklan WHERE id IN (${rep})`;
         pool.query(sql, (err, result) => {
-          if (err) {
-            res.send('Gagal memuat data iklan')
-          } else {
-            res.json(result.rows)
-          }
+            if (err) {
+                res.send('Gagal memuat data iklan')
+            } else {
+                res.json(result.rows)
+            }
         })
-      })
-   
-   
+    })
+
+
 
 
 
     return router;
-    }
+}
