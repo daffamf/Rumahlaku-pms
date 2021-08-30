@@ -186,8 +186,10 @@
             password: password,
           }
         }).done(function (data) {
-          console.log(data)
-          window.location.href = "/"
+          console.log('Login',data)
+          if (data.msg === 'success') {
+            window.location.href = "/"
+          }
         }).fail(function (jqXHR, textStatus) {
           alert("Request failed get data: " + textStatus);
         })
