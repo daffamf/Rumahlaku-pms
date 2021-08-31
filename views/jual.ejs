@@ -22,10 +22,6 @@
 
 </head>
 
-
-
-
-
 <body id="page-top">
 
   <script src="http://maps.googleapis.com/maps/api/js"></script>
@@ -39,7 +35,6 @@
       }).done(function (data) {
         let map;
         let corArray = []
-        // console.log(data)
         var coordsArray = data.data;
         for (let i = 0; i < coordsArray.length; i++) {
           var coords = coordsArray[i];
