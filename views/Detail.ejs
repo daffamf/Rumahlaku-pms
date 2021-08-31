@@ -79,7 +79,7 @@
                     html += `
                 <div class="card-deck" id="card-deck">
     <div class="card" draggable="true" ondragstart="drag(event)" id="${item.id}">
-        <img src="/images/upload/${foto[0]}" class="card-img-top" alt="...">
+        <img src="${foto[0]}" class="card-img-top" alt="...">
     </div>
         </div>
        </div>
@@ -94,7 +94,7 @@
                 <label for="validationTooltipUsername">No. Telepon Pemilik</label>
                 <div class="input-group">
                     <input type="text" class="form-control" id="validationTooltipUsername"
-                        placeholder="Phone Number" aria-describedby="validationTooltipUsernamePrepend" value="${item.no_telepon}" readonly>
+                        placeholder="Phone Number" aria-describedby="validationTooltipUsernamePrepend" value="${item.telepon}" readonly>
                 </div>
             </div>
         </div>
