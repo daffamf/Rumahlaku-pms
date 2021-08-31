@@ -11,7 +11,6 @@ module.exports = function (pool) {
 
     router.get('/coordinate', (req, res) => {
         var sql = "SELECT * FROM iklan koordinat";
-        // console.log(sql)
         pool.query(sql, (err, result) => {
             if (err) {
                 res.send('Gagal')
@@ -54,10 +53,8 @@ module.exports = function (pool) {
         var filename = []
         let sizeFiles = Object.keys(req.files.sampleFile).length;
         for (let i = 0; i < sizeFiles; i++) {
-            // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
             let foto = req.files.sampleFile[i];
             filename.push(today + '_' + makeid(10) + i + '.jpg');
-            // Use the mv() method to place the file somewhere on your server
             foto.mv(path.join(__dirname + filename[i]), function (err) {
                 if (err) return err
             })
@@ -89,7 +86,6 @@ module.exports = function (pool) {
             pool.query(sql, (err, rows) => {
                 if (err) { res.status(400).json({ "error": err.message }); return; }
                 if (err) { res.status(400).json({ "error": err.message }); return; }
-                // res.json(rowsFilt.rows);
                 res.status(200).json({
                     data: rows.rows,
                     current: page,
@@ -114,7 +110,6 @@ module.exports = function (pool) {
             pool.query(sql, (err, rows) => {
                 if (err) { res.status(400).json({ "error": err.message }); return; }
                 if (err) { res.status(400).json({ "error": err.message }); return; }
-                // res.json(rowsFilt.rows);
                 res.status(200).json({
                     data: rows.rows,
                     current: page,
@@ -131,14 +126,15 @@ module.exports = function (pool) {
 
     router.get('/Detail/:id', (req, res) => {
         var { id } = req.params;
-        var sql = `SELECT i.*, u.username, u.no_telepon FROM iklan as i LEFT JOIN users as u ON i.id_users = u.id WHERE i.id = ${id}`;
+        var sql = `SELECT i.*, u.username FROM iklan as i LEFT JOIN users as u ON i.id_users = u.id WHERE i.id = ${id}`;
         pool.query(sql, (err, result) => {
             if (err) {
+                console.log
                 res.send('Gagal memuat data iklan')
             } else {
                 res.json({
                     data: result.rows,
-                    coord: coord
+                 
                 })
 
             }
@@ -162,7 +158,6 @@ module.exports = function (pool) {
 
     router.get('/:page', function (req, res, next) {
         const search = req.query.search
-        // console.log(search)
         pool.query('SELECT lokasi FROM iklan', (err, result_lok) => {
             const result = result_lok.rows
             let lokasi = []
@@ -212,7 +207,6 @@ module.exports = function (pool) {
                     }
                 }
             }
-            // const sql = 'SELECT * FROM iklan ORDER BY id ASC';
             pool.query(sql, (err, rows) => {
                 if (err) { res.status(400).json({ "error": err.message }); return; }
                 let rowsRes = rows.rows
@@ -222,7 +216,6 @@ module.exports = function (pool) {
                 sql += ` ORDER BY id DESC LIMIT 3 OFFSET ${(page - 1) * per_page} `;
                 pool.query(sql, (err, data) => {
                     if (err) { res.status(400).json({ "error": err.message }); return; }
-                    // res.json(rowsFilt.rows);
                     res.status(200).json({
                         coord: coord,
                         data: data.rows,
@@ -243,30 +236,19 @@ module.exports = function (pool) {
     router.post('/register', function (req, res, next) {
 
         if (req.body.password != req.body.repassword) {
-            req.flash('info', 'password doesnt match') //set
-
-
-
+            req.flash('info', 'password doesnt match') 
         }
         pool.query('select * from users where email= $1', [req.body.email], (err, data) => {
             if (err) {
                 req.flash('info', 'try again later')
-
             }
-
-
             if (data.rows.lenght > 0) {
                 console.log('rrr', data.rows.length > 0)
                 req.flash('info', 'try again later')
-
             }
-
             bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
                 if (err) {
                     req.flash('info', 'email alredy exist')
-
-
-
                 }
                 console.log(hash)
                 pool.query(`insert into users(username,email, password,Telepon) values ('${req.body.username}', '${req.body.email}', '${hash}','${req.body.Telepon}')`, (err, data) => {
@@ -287,15 +269,15 @@ module.exports = function (pool) {
     router.post('/login', function (req, res, next) {
         const { email, password } = req.body
         pool.query(`select * from users where email = '${email}'`, (err, data) => {
-            // console.log( data.rows[0].password)
+        
             if (err) {
-                console.log('www', err)
+                console.log(err)
                 req.flash('info', 'email alredy exist')
             }
             if (data.rows.length) {
                 bcrypt.compare(password, data.rows[0].password, (err, result) => {
                     if (err) {
-                        console.log('www', err)
+                        console.log(err)                      
                         req.flash('info', 'email/password incorrect')
                         return
                     }
